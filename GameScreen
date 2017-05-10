@@ -125,6 +125,12 @@ public class GameScreen implements Screen, InputProcessor {
             bucket.x -= 200 * Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyPressed(Keys.RIGHT))
             bucket.x += 200 * Gdx.graphics.getDeltaTime();
+        if (Gdx.input.isKeyPressed(Keys.UP))
+        {
+            bucket.y += 200 * Gdx.graphics.getDeltaTime();
+            if (bucket.y > camera.position.y + 400 - 64)
+                camera.position.y += 200 * delta;
+        }
 
         // make sure the bucket stays within the screen bounds
         if (bucket.x < 0)
