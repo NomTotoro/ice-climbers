@@ -12,7 +12,7 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;z
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
@@ -49,7 +49,7 @@ public class GameScreen implements Screen, InputProcessor {
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 800, 480);
+        camera.setToOrtho(false, 1000, 1000);
 
         // create a Rectangle to logically represent the bucket
         bucket = new Rectangle();
@@ -62,14 +62,14 @@ public class GameScreen implements Screen, InputProcessor {
         // create the raindrops array and spawn the first raindrop
         raindrops = new Array<Rectangle>();
         spawnRaindrop();
-       renderer = new ShapeRenderer();
+        renderer = new ShapeRenderer();
         rectangles = new Array<Rectangle>();
 
-        
         Gdx.input.setInputProcessor(this);
-
     }
-    private void spawnRaindrop() {
+
+    private void spawnRaindrop()
+    {
         Rectangle raindrop = new Rectangle();
         raindrop.x = MathUtils.random(0, 800 - 64);
         raindrop.y = 480;
@@ -125,12 +125,6 @@ public class GameScreen implements Screen, InputProcessor {
             bucket.x -= 200 * Gdx.graphics.getDeltaTime();
         if (Gdx.input.isKeyPressed(Keys.RIGHT))
             bucket.x += 200 * Gdx.graphics.getDeltaTime();
-        if (Gdx.input.isKeyPressed(Keys.UP))
-        {
-            bucket.y += 200 * Gdx.graphics.getDeltaTime();
-            if (bucket.y > camera.position.y + 400 - 64)
-                camera.position.y += 200 * delta;
-        }
 
         // make sure the bucket stays within the screen bounds
         if (bucket.x < 0)
@@ -187,10 +181,19 @@ public class GameScreen implements Screen, InputProcessor {
         //                 iter.remove();
         //             }
         //         }
+
+        if (Gdx.input.isKeyPressed(Keys.UP))
+        {
+            bucket.y += 200 * Gdx.graphics.getDeltaTime();
+            if (bucket.y > camera.position.y + 400 - 64)
+                camera.position.y += 200 * delta;
+        }
+
     }
 
     @Override
-    public void resize(int width, int height) {
+    public void resize(int width, int height) 
+    {
     }
 
     @Override
