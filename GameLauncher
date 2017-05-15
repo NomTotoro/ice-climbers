@@ -3,7 +3,7 @@ public class GameLauncher
 {
     public static void main(String[] args)
     {
-        Drop myProgram = new Drop();
+        Climbers myProgram = new Climbers();
         LwjglApplication launcher = new LwjglApplication(myProgram);
     }
 }
