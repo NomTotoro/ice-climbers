@@ -15,10 +15,10 @@ import com.badlogic.gdx.utils.TimeUtils;
 
 public class EndScreen implements Screen
 {
-          final Drop game;
+          final Climbers game;
 	OrthographicCamera camera;
 
-	public EndScreen(final Drop gam) {
+	public EndScreen(final Climbers gam) {
 		game = gam;
 
 		camera = new OrthographicCamera();
