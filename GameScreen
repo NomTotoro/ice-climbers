@@ -22,9 +22,8 @@ public class GameScreen implements Screen, InputProcessor {
     final Climbers game;
 
     Texture exampleBlock;
-    Texture popoImage;
     
-    Rectangle popo;
+    Player p1;
     OrthographicCamera camera;
     Array<Rectangle> blocks;
     ShapeRenderer renderer;
@@ -36,19 +35,14 @@ public class GameScreen implements Screen, InputProcessor {
 
         // load the images for the droplet and the bucket, 64x64 pixels each
         exampleBlock = new Texture(Gdx.files.internal("GreenBlock.png"));
-        popoImage = new Texture(Gdx.files.internal("Popo.png"));
 
 
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
 
+        p1 = new Player();
 
-        popo = new Rectangle();
-        popo.x = 240;
-        popo.y = 400;
-        popo.width = 12;
-        popo.height = 20;
         // create the raindrops array and spawn the first raindrop
         
         blocks = new Array<Rectangle>();
@@ -92,7 +86,7 @@ public class GameScreen implements Screen, InputProcessor {
         for (Rectangle block : blocks) {
             game.batch.draw(exampleBlock, block.x, block.y);
         }
-        game.batch.draw(popoImage, popo.x, popo.y);
+        game.batch.draw(p1.popoImage, p1.popo.x, p1.popo.y);
         game.batch.end();
 
         
