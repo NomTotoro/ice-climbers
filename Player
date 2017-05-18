@@ -18,20 +18,105 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.InputProcessor;
 
-public class Player
+public class Player implements InputProcessor
 {
     Texture popoImage;
     Rectangle popo;
-
+    
+    boolean upAir;
+    boolean downAir;
+    boolean jump;
 
     public Player()
     {
         popoImage = new Texture(Gdx.files.internal("Popo.png"));
         popo = new Rectangle();
-        popo.x = 240;
-        popo.y = 400;
+        popo.x = 400;
+        popo.y = 200;
         popo.width = 12;
         popo.height = 20;
+        
+        upAir = false;
+        downAir = true;
+        jump = false;
+
+        Gdx.input.setInputProcessor(this);
+    }
+
+    public boolean keyDown (int keycode) 
+    {
+        switch(keycode)
+        {
+            case Keys.LEFT:
+            GameScreen.keyLeft = true;
+            return true;
+            
+            case Keys.RIGHT:
+            GameScreen.keyRight = true;
+            return true;
+            
+            case Keys.SPACE:
+            if (!upAir && !downAir)
+            {
+                jump = true;
+                upAir = true;
+                downAir = false;
+                System.out.println("hi");
+            }
+            return true;
+        }
+        return false;
+    }
+
+    public boolean keyUp (int keycode) 
+    {
+        switch(keycode)
+        {
+            case Keys.LEFT:
+            GameScreen.keyLeft = false;
+            return true;
+            
+            case Keys.RIGHT:
+            GameScreen.keyRight = false;
+            return true;
+            
+            case Keys.SPACE:
+            jump = false;
+            return true;
+        }
+        return false;
+    }
+
+    public boolean keyTyped (char character) 
+    {
+        return false;
+    }
+
+    public boolean touchDown (int x, int y, int pointer, int button) 
+    {
+        return false;
+    }
+
+    public boolean touchUp (int x, int y, int pointer, int button) 
+    {
+        return false;
+    }
+
+    public boolean touchDragged (int screenX, int screenY, int pointer)
+    {
+
+        return false;
+
+    }
+
+    public boolean mouseMoved (int x, int y)
+    {
+        return false;
+    }
+
+    public boolean scrolled (int amount)
+    {
+        return false;
     }
 
 }
