@@ -29,6 +29,15 @@ public class GameScreen implements Screen, InputProcessor {
     ShapeRenderer renderer;
     float x;
     float y;
+    
+    final int gravity = 3;
+    final int velocity = 3;
+    
+    final int origFall = 20;
+    int fall;
+    
+    static boolean keyLeft;
+    static boolean keyRight;
 
     public GameScreen(final Climbers gam) {
         this.game = gam;
@@ -48,6 +57,8 @@ public class GameScreen implements Screen, InputProcessor {
         blocks = new Array<Rectangle>();
         spawnBlock(100, 100);
         renderer = new ShapeRenderer();
+        
+        fall = origFall;
 
         Gdx.input.setInputProcessor(this);
     }
@@ -89,9 +100,87 @@ public class GameScreen implements Screen, InputProcessor {
         game.batch.draw(p1.popoImage, p1.popo.x, p1.popo.y);
         game.batch.end();
 
+        move(delta);
+        fall();
+        inAir();
+
+    }
+    
+    private void move(float delta)
+    {
+        if (keyLeft)
+        {
+            p1.popo.x -= velocity;
+        }
         
+        if (keyRight)
+        {
+            p1.popo.x += velocity;
+        }
+        
+        if (p1.jump)
+        {
+            p1.popo.y += 10;
+        }
+    }
+    
+    private void fall()
+    {
+        if (p1.popo.y <= p1.popo.height)
+        {
+            p1.popo.y = p1.popo.height;
+            //p1.upAir = false;
+            p1.downAir = false;
+            //System.out.println("hi");
+        }
+        else
+        {
+            p1.jump = false;
+            //p1.downAir = true;
+        }
+        
+        System.out.println(p1.upAir);
+        
+        if (p1.upAir)
+        {
+            p1.popo.y += fall;
+            fall--;
+            
+            if (fall <= 0)
+            {
+                p1.upAir = false;
+                p1.downAir = true;
+                fall = 0;
+            }
+        }
+        
+        if (p1.downAir)
+        {
+            p1.popo.y += fall;
+            fall -= 1;
+            
+            if (p1.popo.y < p1.popo.height)
+            {
+                p1.popo.y = p1.popo.height;
+                //p1.upAir = false;
+                p1.downAir = false;
+                fall = origFall;
+            }
+        }
+        
+        p1.popo.y -= gravity;
+    }
 
-
+    private void inAir()
+    {
+        if (p1.downAir && p1.popo.y <= p1.popo.height + 1)
+        {
+            //p1.upAir = false;
+            //p1.downAir = false;
+        }
+        else
+        {
+        }
     }
 
     @Override
@@ -123,12 +212,14 @@ public class GameScreen implements Screen, InputProcessor {
 
     public boolean keyDown (int keycode) 
     {
-        return false;
+        p1.keyDown(keycode);   
+        return true;
     }
 
     public boolean keyUp (int keycode) 
     {
-        return false;
+        p1.keyUp(keycode);
+        return true;
     }
 
     public boolean keyTyped (char character) 
