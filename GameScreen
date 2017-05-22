@@ -6,6 +6,9 @@ import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
@@ -22,7 +25,9 @@ public class GameScreen implements Screen, InputProcessor {
     final Climbers game;
 
     Texture exampleBlock;
-    
+    private TmxMapLoader maploader;
+    private TiledMap map; 
+    private OrthogonalTiledmapRenderer renderer;
     Player p1;
     OrthographicCamera camera;
     Array<Rectangle> blocks;
@@ -61,7 +66,10 @@ public class GameScreen implements Screen, InputProcessor {
         fall = origFall;
 
         Gdx.input.setInputProcessor(this);
-    }
+        maploader = new TmxMapLoader();
+        map= maploader.load("IceClimbersBackground.tmx");
+        renderer2= new OrthogonalTiledMapRenderer(map);
+camera.position.set(800 / 2, 480 / 2, 0);    }
 
     private void spawnBlock(int x, int y)
     {
@@ -73,7 +81,16 @@ public class GameScreen implements Screen, InputProcessor {
         blocks.add(block);
     }
     
-
+    public void handleInput(float dt){
+        if(Gdx.input.isTouched())
+        camera.position.x += 100 * dt;
+    }
+    
+    public void update(float dt){
+        handleInput(dt);
+        camera.update();
+    }
+    
     @Override
     public void render(float delta) {
         // clear the screen with a dark blue color. The
