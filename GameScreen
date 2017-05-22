@@ -31,7 +31,9 @@ public class GameScreen implements Screen, InputProcessor {
     float y;
     
     final int gravity = 3;
-    final int velocity = 3;
+    int lVelocity = 3;
+    int rVelocity = 3;
+    final int oVelocity = 3;
     
     final int origFall = 20;
     int fall;
@@ -56,6 +58,7 @@ public class GameScreen implements Screen, InputProcessor {
         
         blocks = new Array<Rectangle>();
         spawnBlock(100, 100);
+        spawnBlock(600, 015);
         renderer = new ShapeRenderer();
         
         fall = origFall;
@@ -68,8 +71,8 @@ public class GameScreen implements Screen, InputProcessor {
         Rectangle block = new Rectangle();
         block.x = x;
         block.y = y;
-        block.width = 64;
-        block.height = 64;
+        block.width = 12;
+        block.height = 20;
         blocks.add(block);
     }
     
@@ -103,24 +106,68 @@ public class GameScreen implements Screen, InputProcessor {
         move(delta);
         fall();
         inAir();
+        checkCollision();
 
+    }
+    
+    private void checkCollision()
+    {
+        for (Rectangle r: blocks)
+        {
+            if (p1.popo.overlaps(r))
+            {
+                //System.out.println(true);
+                if (p1.popo.x < r.x)
+                {
+                    //p1.popo.x = r.x - 1;
+                    rVelocity = 0;
+                }
+                if (p1.popo.x > r.x)
+                {
+                    //p1.popo.x = r.x + 20;
+                    lVelocity = 0;
+                }
+                if (p1.popo.y < r.y)
+                {
+                    
+                }
+                if (p1.popo.y > r.y)
+                {
+                }
+            }
+            else
+            {
+                //System.out.println(false);
+                lVelocity = rVelocity = oVelocity;
+            }
+        }
     }
     
     private void move(float delta)
     {
         if (keyLeft)
         {
-            p1.popo.x -= velocity;
+            p1.popo.x -= lVelocity;
         }
         
         if (keyRight)
         {
-            p1.popo.x += velocity;
+            p1.popo.x += rVelocity;
         }
         
         if (p1.jump)
         {
             p1.popo.y += 10;
+        }
+        
+        if (p1.popo.x < 0)
+        {
+            p1.popo.x = 800-p1.popo.width;
+        }
+        
+        if (p1.popo.x > 800-p1.popo.width)
+        {
+            p1.popo.x = 0;
         }
     }
     
@@ -138,8 +185,6 @@ public class GameScreen implements Screen, InputProcessor {
             p1.jump = false;
             //p1.downAir = true;
         }
-        
-        System.out.println(p1.upAir);
         
         if (p1.upAir)
         {
@@ -238,10 +283,8 @@ public class GameScreen implements Screen, InputProcessor {
     }
 
     public boolean touchDragged (int screenX, int screenY, int pointer)
-    {
-     
+    { 
         return false;
-
     }
 
     public boolean mouseMoved (int x, int y)
