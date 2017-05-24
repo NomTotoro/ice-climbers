@@ -103,10 +103,11 @@ public class GameScreen implements Screen, InputProcessor {
         game.batch.draw(p1.popoImage, p1.popo.x, p1.popo.y);
         game.batch.end();
 
+        
+        checkCollision();
         move(delta);
         fall();
         inAir();
-        checkCollision();
 
     }
     
@@ -129,10 +130,15 @@ public class GameScreen implements Screen, InputProcessor {
                 }
                 if (p1.popo.y < r.y)
                 {
-                    
+//                     p1.upAir = false;
+//                     p1.downAir = true;
+//                     p1.popo.y = r.y - 1;
                 }
                 if (p1.popo.y > r.y)
                 {
+//                     p1.popo.y = r.y + 1;
+//                     p1.downAir = false;
+//                     p1.upAir = false;
                 }
             }
             else
@@ -176,7 +182,7 @@ public class GameScreen implements Screen, InputProcessor {
         if (p1.popo.y <= p1.popo.height)
         {
             p1.popo.y = p1.popo.height;
-            //p1.upAir = false;
+            p1.upAir = false;
             p1.downAir = false;
             //System.out.println("hi");
         }
