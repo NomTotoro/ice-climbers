@@ -22,22 +22,22 @@ public class GameScreen implements Screen, InputProcessor {
     final Climbers game;
 
     Texture exampleBlock;
-    
+
     Player p1;
     OrthographicCamera camera;
     Array<Rectangle> blocks;
     ShapeRenderer renderer;
     float x;
     float y;
-    
-    final int gravity = 3;
+
+    int gravity = 3;
     int lVelocity = 3;
     int rVelocity = 3;
     final int oVelocity = 3;
-    
+
     final int origFall = 20;
     int fall;
-    
+
     static boolean keyLeft;
     static boolean keyRight;
 
@@ -47,7 +47,6 @@ public class GameScreen implements Screen, InputProcessor {
         // load the images for the droplet and the bucket, 64x64 pixels each
         exampleBlock = new Texture(Gdx.files.internal("GreenBlock.png"));
 
-
         // create the camera and the SpriteBatch
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 800, 480);
@@ -55,12 +54,12 @@ public class GameScreen implements Screen, InputProcessor {
         p1 = new Player();
 
         // create the raindrops array and spawn the first raindrop
-        
+
         blocks = new Array<Rectangle>();
         spawnBlock(100, 100);
         spawnBlock(600, 015);
         renderer = new ShapeRenderer();
-        
+
         fall = origFall;
 
         Gdx.input.setInputProcessor(this);
@@ -75,7 +74,6 @@ public class GameScreen implements Screen, InputProcessor {
         block.height = 20;
         blocks.add(block);
     }
-    
 
     @Override
     public void render(float delta) {
@@ -96,89 +94,106 @@ public class GameScreen implements Screen, InputProcessor {
         // begin a new batch and draw the bucket and
         // all drops
         game.batch.begin();
-        
+
         for (Rectangle block : blocks) {
             game.batch.draw(exampleBlock, block.x, block.y);
         }
         game.batch.draw(p1.popoImage, p1.popo.x, p1.popo.y);
         game.batch.end();
 
-        
         checkCollision();
         move(delta);
         fall();
         inAir();
 
     }
-    
+
     private void checkCollision()
     {
-        for (Rectangle r: blocks)
+        for (int i = 0; i < blocks.size; i++)
         {
+            Rectangle r = blocks.get(i);
+
             if (p1.popo.overlaps(r))
             {
-                //System.out.println(true);
-                if (p1.popo.x < r.x)
+                //System.out.println();
+
+                if (p1.popo.y > r.y)
+                {
+
+                    p1.downAir = false;
+                    if (!p1.jump)
+                    {
+
+                        p1.upAir = false;
+                        p1.popo.y = r.y + 10;   
+                    }
+                }
+                else if (p1.popo.y < r.y && p1.upAir)
+                {
+                    System.out.println("popo " + p1.popo.y);
+                    System.out.println("r " + r.y);
+                    float hi = r.y;
+                    blocks.removeIndex(i);
+                    p1.popo.y = hi;
+                    p1.upAir = false;
+                    p1.downAir = true;
+                    fall();
+                }
+                else if (p1.popo.x < r.x)
                 {
                     //p1.popo.x = r.x - 1;
                     rVelocity = 0;
                 }
-                if (p1.popo.x > r.x)
+                else if (p1.popo.x > r.x)
                 {
                     //p1.popo.x = r.x + 20;
                     lVelocity = 0;
                 }
-                if (p1.popo.y < r.y)
-                {
-//                     p1.upAir = false;
-//                     p1.downAir = true;
-//                     p1.popo.y = r.y - 1;
-                }
-                if (p1.popo.y > r.y)
-                {
-//                     p1.popo.y = r.y + 1;
-//                     p1.downAir = false;
-//                     p1.upAir = false;
-                }
             }
+
             else
             {
                 //System.out.println(false);
                 lVelocity = rVelocity = oVelocity;
             }
+
         }
     }
-    
+
     private void move(float delta)
     {
         if (keyLeft)
         {
             p1.popo.x -= lVelocity;
         }
-        
+
         if (keyRight)
         {
             p1.popo.x += rVelocity;
         }
-        
+
         if (p1.jump)
         {
             p1.popo.y += 10;
         }
-        
+
         if (p1.popo.x < 0)
         {
             p1.popo.x = 800-p1.popo.width;
         }
-        
+
         if (p1.popo.x > 800-p1.popo.width)
         {
             p1.popo.x = 0;
         }
     }
-    
+
     private void fall()
     {
+        Rectangle r = null;
+        gravity = 3;
+
         if (p1.popo.y <= p1.popo.height)
         {
             p1.popo.y = p1.popo.height;
@@ -186,51 +201,60 @@ public class GameScreen implements Screen, InputProcessor {
             p1.downAir = false;
             //System.out.println("hi");
         }
-        else
+
+        for (int i = 0; i < blocks.size; i++)
         {
-            p1.jump = false;
-            //p1.downAir = true;
+            r = blocks.get(i);
+
+            if (!p1.popo.overlaps(r))
+            {
+                p1.jump = false;
+            }
         }
-        
+
         if (p1.upAir)
         {
             p1.popo.y += fall;
             fall--;
-            
+
             if (fall <= 0)
             {
                 p1.upAir = false;
                 p1.downAir = true;
-                fall = 0;
             }
         }
-        
+
         if (p1.downAir)
         {
             p1.popo.y += fall;
             fall -= 1;
-            
+
             if (p1.popo.y < p1.popo.height)
             {
                 p1.popo.y = p1.popo.height;
-                //p1.upAir = false;
+                p1.downAir = false;
+                fall = origFall;
+            }
+            if (p1.popo.overlaps(r))
+            {
+                p1.popo.y = r.y + 10;
                 p1.downAir = false;
                 fall = origFall;
             }
         }
-        
+
         p1.popo.y -= gravity;
     }
 
     private void inAir()
     {
-        if (p1.downAir && p1.popo.y <= p1.popo.height + 1)
+        if (p1.downAir)
         {
-            //p1.upAir = false;
-            //p1.downAir = false;
+            p1.upAir = false;
         }
-        else
+        if (p1.upAir)
         {
+            p1.downAir = false;
         }
     }
 
